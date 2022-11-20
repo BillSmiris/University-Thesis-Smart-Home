@@ -1,0 +1,137 @@
+﻿a.device {
+    /*width: 25%;*/
+    width: 20rem;
+    height: 20rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 1.5rem;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+a.device:hover{
+    text-decoration: none;
+}
+
+a.device:hover{
+    background-color:#eee;
+}
+
+a.device:after {
+    content: "";
+    display: inline-block;
+    padding-bottom: 100%;
+}
+
+a.device img{
+    width:80%;
+}
+
+a.device span{
+    font-size:1.5rem;
+    color:black;
+    display:block;
+}
+
+a.device span:hover{
+    color:black;
+}
+
+a.device span:active {
+    color: black;
+}
+
+.displayname-row button {
+    margin-left: -2rem;
+}
+
+.displayname-edit-button-false{
+    display:none;
+}
+
+.displayname-row:hover .displayname-edit-button-false {
+    display: block;
+}
+
+.displayname-edit-button-true {
+    display: block;
+}
+
+
+.displayname-row span {
+    font-size: 1.5rem;
+    font-weight: 100;
+}
+
+.displayname-row input[type="text"] {
+    font-size:1.5rem;
+    width:75%;
+}
+
+@media only screen and (max-width: 991px) {
+    a.device {
+        width: 15rem;
+        height: 15rem;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    a.device {
+        width: 10rem;
+        height: 10rem; 
+    }
+
+    a.device span{
+        font-size:1rem;
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    a.device {
+        width: 100%;
+        height: 40vh;
+    }
+
+    a.device span{
+        font-size:1.5rem;
+    }
+}
+
+.bottom-right-buttons {
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+}
+
+tr.user-row button {
+    visibility: hidden;
+}
+
+tr.user-row:hover button {
+    visibility: visible;
+}
+
+.custom-range{
+    display: block;
+    width: 40%;
+}
+
+body{
+    overflow:hidden;
+}
+
+.main{
+    height: 100vh;
+    overflow-y: scroll;
+
+}
+
+@media only screen and (max-width: 640px) {
+    body {
+        overflow: initial;
+    }
+
+    .main {
+        overflow-y: initial;
+    }
+}

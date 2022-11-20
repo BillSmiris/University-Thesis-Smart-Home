@@ -1,0 +1,35 @@
+﻿@inherits LayoutComponentBase
+@inject IModalService modal
+
+<div class="page">
+    <AuthorizeView>
+        <Authorized>
+            <div class="sidebar test">
+                <NavMenu />
+            </div>
+
+            <div class="main">
+                <div class="content px-4">
+                    @Body
+                </div>
+                <div class="btn-toolbar bottom-right-buttons">
+                    <button class="btn btn-primary mr-2" onclick="ToggleDarkTheme()">
+                        <span class="oi oi-moon" aria-hidden="true"></span>
+                    </button>
+                    <button class="btn btn-primary" @onclick="@(()=>modal.Show<UnauthorizedDevices>("Add Devices"))">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Add Device
+                    </button>
+                </div>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="w-100 px-5 text-center">
+                <SmartHome.Client.Shared.Login />
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code{
+
+}

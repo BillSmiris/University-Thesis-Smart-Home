@@ -1,0 +1,14 @@
+﻿<h3>@message</h3>
+<button class="btn btn-primary" @onclick="() => Yes()">Yes</button>
+<button class="btn btn-danger" @onclick="() => No()">No</button>
+
+@code {
+    [Parameter]
+    public string message { get; set; }
+
+    [CascadingParameter] BlazoredModalInstance modal{ get; set; }
+
+    async Task Yes() => await modal.CloseAsync(ModalResult.Ok(true));
+
+    async Task No() => await modal.CancelAsync();
+}

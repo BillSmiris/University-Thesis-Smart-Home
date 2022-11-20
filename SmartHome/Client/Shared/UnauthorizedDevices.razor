@@ -1,0 +1,78 @@
+﻿@using System.Net.WebSockets
+@using System.Text
+@using System.Threading
+@using System.Text.Json
+@implements IDisposable
+@inject IJSRuntime JS
+@inject IAuthService AuthService
+
+<AuthorizeView>
+    <Authorized>
+        @if (webSocket.State == WebSocketState.Open && list.Count > 0)
+        {
+            <table class="table">
+                <tbody>
+                    @foreach (var item in list)
+                    {
+                        <tr>
+                            <td>@item.displayname</td>
+                            <td><button class="btn btn-primary" @onclick="() => AuthorizeDevice(item.name)">Add</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h4>No devices found.</h4>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h3>Unauthorized Access!</h3>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    CancellationTokenSource disposalTokenSource = new CancellationTokenSource();
+    ClientWebSocket webSocket = new ClientWebSocket();
+    List<DeviceListModel> list = new List<DeviceListModel>() { };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await webSocket.ConnectAsync(new Uri("ws://server:60648/api/devices/discover"), disposalTokenSource.Token);
+        _ = ReceiveLoop();
+        //await SendMessageAsync();
+    }
+
+    async Task SendMessageAsync()
+    {
+        var data = new ArraySegment<byte>(Encoding.UTF8.GetBytes("ok"));
+        await webSocket.SendAsync(data, WebSocketMessageType.Text, true, disposalTokenSource.Token);
+
+    }
+
+    async Task ReceiveLoop()
+    {
+        var buffer = new ArraySegment<byte>(new byte[1024 * 4]);
+        while (!disposalTokenSource.IsCancellationRequested)
+        {
+            var received = await webSocket.ReceiveAsync(buffer, disposalTokenSource.Token);
+            var receivedAsText = Encoding.UTF8.GetString(buffer.Array, 0, received.Count);
+            list = System.Text.Json.JsonSerializer.Deserialize<List<DeviceListModel>>(receivedAsText);
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        disposalTokenSource.Cancel();
+        _ = webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Bye", CancellationToken.None);
+    }
+
+    public async void AuthorizeDevice(string name)
+    {
+        await JS.InvokeAsync<string>("AuthorizeDevice", name);
+    }
+}

@@ -1,0 +1,60 @@
+﻿@using System.Text.Json
+@inject HttpClient Http
+@inject IJSRuntime js
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject IToastService toastService
+
+<EditForm Model="@registerModel" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="username">
+            Username:
+        </label>
+        <InputText id="username" class="form-control" @bind-Value="registerModel.username" />
+        <ValidationMessage For="@(() => registerModel.username)" />
+    </div>
+    <div class="form-group">
+        <label for="email">
+            E-mail:
+        </label>
+        <InputText id="email" class="form-control" @bind-Value="registerModel.email" />
+        <ValidationMessage For="@(() => registerModel.email)" />
+    </div>
+    <div class="form-group">
+        <label for="password">
+            Password:
+        </label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="registerModel.password" />
+        <ValidationMessage For="@(() => registerModel.password)" />
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary text-center" type="submit">Add User</button>
+    </div>
+</EditForm>
+
+<BlazoredToasts />
+
+@code {
+    private RegisterRequestModel registerModel = new RegisterRequestModel() { role = "User" };
+    private bool ShowErrors;
+    private string Error = "";
+
+    private async Task HandleSubmit()
+    {
+        ShowErrors = false;
+
+        var result = await AuthService.Register(registerModel);
+
+        if (result.status == "Success")
+        {
+            registerModel = new RegisterRequestModel() { role = "User" };
+            this.StateHasChanged();
+            toastService.ShowSuccess("User succesfully added!");
+        }
+        else
+        {
+            toastService.ShowError(result.message);
+        }
+    }
+}

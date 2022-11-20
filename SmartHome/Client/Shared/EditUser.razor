@@ -1,0 +1,66 @@
+﻿@using System.Text.Json
+@inject HttpClient Http
+@inject IJSRuntime js
+@inject IAuthService AuthService
+@inject IToastService toastService
+
+<EditForm Model="@editUserModel" OnValidSubmit="@SubmitChanges">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="username">
+            Username:
+        </label>
+        <InputText id="username" class="form-control" @bind-Value="editUserModel.username" />
+        <ValidationMessage For="@(() => editUserModel.username)" />
+    </div>
+    <div class="form-group">
+        <label for="email">
+            E-mail:
+        </label>
+        <InputText id="email" class="form-control" @bind-Value="editUserModel.email" />
+        <ValidationMessage For="@(() => editUserModel.email)" />
+    </div>
+    <div class="form-group">
+        <label for="password">
+            Password:
+        </label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="editUserModel.password" />
+        <ValidationMessage For="@(() => editUserModel.password)" />
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary text-center" type="submit">Save Changes</button>
+    </div>
+</EditForm>
+
+<BlazoredToasts />
+
+@code {
+    [Parameter]
+    public UserListResponseModel selectedItem { get; set; }
+
+    private EditUserRequestModel editUserModel = new EditUserRequestModel();
+    private bool ShowErrors;
+    private string Error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        editUserModel.username = selectedItem.username;
+        editUserModel.previousUsername = selectedItem.username;
+        editUserModel.email = selectedItem.email;
+    }
+
+    private async Task SubmitChanges()
+    {
+        var result = await AuthService.EditUser(editUserModel);
+        if (result.status == "Success")
+        {
+            toastService.ShowSuccess(result.message);
+            editUserModel.previousUsername = editUserModel.username;
+        }
+        else
+        {
+            toastService.ShowError(result.message);
+        }
+
+    }
+}

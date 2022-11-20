@@ -1,0 +1,137 @@
+﻿@page "/users"
+@using System.Net.WebSockets
+@using System.Text
+@using System.Threading
+@using System.Text.Json
+@inject IModalService modal
+@implements IDisposable
+@inject IToastService toastService
+@inject IAuthService AuthService
+
+<h3>Users</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <button class="btn btn-primary text-center" @onclick="@(()=>modal.Show<SmartHome.Client.Shared.Register>("Add User"))"><span class="oi oi-plus" aria-hidden="true"></span> Add User</button>
+        <button class="btn btn-primary text-center" @onclick="@(()=>ChangeAdminPassword())"><span class="oi oi-key" aria-hidden="true"></span> Change Admin Password</button>
+        @if (webSocket.State == WebSocketState.Open && list.Count > 0)
+        {
+            <div class="mt-2">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in list)
+                        {
+                            <tr class="user-row">
+                                <td>@item.username</td>
+                                <td>@item.email</td>
+                                <td><button class="btn btn-primary" @onclick="@(()=>OpenEditUserModal(item))"><span class="oi oi-pencil" aria-hidden="true"></span> Edit</button></td>
+                                <td><button class="btn btn-danger" @onclick="@(()=>DeleteUser(item))"><span class="oi oi-x" aria-hidden="true"></span> Delete</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <h4 class="mt-2">No users found.</h4>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h3>Unauthorized Access!</h3>
+    </NotAuthorized>
+</AuthorizeView>
+
+<BlazoredToasts />
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    CancellationTokenSource disposalTokenSource = new CancellationTokenSource();
+    ClientWebSocket webSocket = new ClientWebSocket();
+    List<UserListResponseModel> list = new List<UserListResponseModel>() { };
+
+    public UserListResponseModel selectedItem;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await webSocket.ConnectAsync(new Uri("ws://server:60648/api/authenticate/users"), disposalTokenSource.Token);
+        _ = ReceiveLoop();
+        //await SendMessageAsync();
+    }
+
+    async Task SendMessageAsync()
+    {
+        var data = new ArraySegment<byte>(Encoding.UTF8.GetBytes("ok"));
+        await webSocket.SendAsync(data, WebSocketMessageType.Text, true, disposalTokenSource.Token);
+
+    }
+
+    async Task ReceiveLoop()
+    {
+        var buffer = new ArraySegment<byte>(new byte[1024 * 4]);
+        while (!disposalTokenSource.IsCancellationRequested)
+        {
+            var received = await webSocket.ReceiveAsync(buffer, disposalTokenSource.Token);
+            var receivedAsText = Encoding.UTF8.GetString(buffer.Array, 0, received.Count);
+            list = System.Text.Json.JsonSerializer.Deserialize<List<UserListResponseModel>>(receivedAsText);
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        disposalTokenSource.Cancel();
+        _ = webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Bye", CancellationToken.None);
+    }
+
+    public void OpenEditUserModal(UserListResponseModel user)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(EditUser.selectedItem), user);
+        var messageForm = modal.Show<EditUser>("Edit User", parameters);
+    }
+
+    public async void DeleteUser(UserListResponseModel user)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ConfirmationDialog.message), "Are you sure you want to delete user " + user.username + "?");
+        var dialogModal = modal.Show<ConfirmationDialog>("Delete User", parameters);
+        var modalResult = await dialogModal.Result;
+        if (!modalResult.Cancelled)
+        {
+            if ((bool)modalResult.Data)
+            {
+                var result = await AuthService.DeleteUser(user.username);
+                if (result.status == "Success")
+                {
+                    toastService.ShowSuccess(result.message);
+                }
+                else
+                {
+                    toastService.ShowError(result.message);
+                }
+            }
+        }
+    }
+
+    public async void ChangeAdminPassword()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ChangePassword.username), "admin");
+        var changePasswordModal = modal.Show<ChangePassword>("Change Admin Password", parameters);
+        var modalResult = await changePasswordModal.Result;
+        if (!modalResult.Cancelled)
+        {
+            toastService.ShowSuccess("Admin password changed susseccfully!");
+        }
+    }
+}

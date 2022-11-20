@@ -1,0 +1,103 @@
+﻿@page "/"
+@using System.Net.WebSockets
+@using System.Text
+@using System.Threading
+@using System.Text.Json
+@implements IDisposable
+@inject IAuthService AuthService
+@inject IJSRuntime JS
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Devices</h1>
+
+        @if (webSocket.State == WebSocketState.Open && list.Count > 0)
+        {
+            <div class="col">
+                <div class="row">
+                    @foreach (var item in list)
+                    {
+                        <a class="device" href="/devicepanel/@item.name">
+                            @if (darkTheme)
+                            {
+                                <img class="dark-theme-img" src=@("svg/dark/" + item.devicetype + ".svg") alt="@item.devicetype" />
+                            }
+                            else 
+                            {
+                                <img class="dark-theme-img" src=@("svg/light/" + item.devicetype + ".svg") alt="@item.devicetype" />
+                            }
+                            <span>@item.displayname</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <h4>No devices found.</h4>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h3>Unauthorized Access!</h3>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    CancellationTokenSource disposalTokenSource = new CancellationTokenSource();
+    ClientWebSocket webSocket = new ClientWebSocket();
+    List<DeviceListModel> list = new List<DeviceListModel>() { };
+    bool darkTheme;
+
+    protected override async Task OnInitializedAsync()
+    {
+        darkTheme = await JS.InvokeAsync<bool>("GetDarkThemeStatus");
+        await webSocket.ConnectAsync(new Uri("ws://server:60648/api/devices/user"), disposalTokenSource.Token);
+        _ = ReceiveLoop();
+        await LogUserAuthenticationState();
+        //await SendMessageAsync();
+    }
+
+    async Task SendMessageAsync()
+    {
+        var data = new ArraySegment<byte>(Encoding.UTF8.GetBytes("ok"));
+        await webSocket.SendAsync(data, WebSocketMessageType.Text, true, disposalTokenSource.Token);
+
+    }
+
+    async Task ReceiveLoop()
+    {
+        var buffer = new ArraySegment<byte>(new byte[1024 * 4]);
+        while (!disposalTokenSource.IsCancellationRequested)
+        {
+            var received = await webSocket.ReceiveAsync(buffer, disposalTokenSource.Token);
+            var receivedAsText = Encoding.UTF8.GetString(buffer.Array, 0, received.Count);
+            list = System.Text.Json.JsonSerializer.Deserialize<List<DeviceListModel>>(receivedAsText);
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        disposalTokenSource.Cancel();
+        _ = webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Bye", CancellationToken.None);
+    }
+
+    [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private async Task LogUserAuthenticationState()
+    {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            Console.WriteLine($"User {user.Identity.Name} is authenticated.");
+        }
+        else
+        {
+            Console.WriteLine("User is NOT authenticated.");
+        }
+    }
+}
+
+

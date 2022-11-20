@@ -1,0 +1,142 @@
+﻿@page "/devicepanel/{devicename}"
+@using System.Net.WebSockets
+@using System.Text
+@using System.Threading
+@using System.Text.Json
+@using SmartHome.Shared.Models
+@implements IDisposable
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+@inject IModalService modal
+
+<AuthorizeView>
+    <Authorized>
+        @if (device != null)
+        {
+            <div class="row displayname-row mt-2">
+                <div class="col-5 col-md-4 col-lg-2">
+                    <span>@device.displayname</span>
+                </div>
+                <div class="col-1">
+                    <button class="btn btn-sm btn-primary displayname-edit-button-false" @onclick="EditDisplayName">Edit</button>
+                </div>
+            </div>
+            <br />
+            <h5>Settings:</h5>
+            <div id="settings">
+                @foreach (KeyValuePair<string, Dictionary<string, string>> kvp in device.settings)
+                {
+                    if (kvp.Value["type"] == "slider")
+                    {
+                        <label for=@kvp.Key>@CapitalizeFirst(kvp.Key)</label>
+                        <input type="range" class="custom-range" id="@kvp.Key" name="@kvp.Key" min="0" max="255" value="@kvp.Value["value"]" @oninput="LivePreview">
+                        <br />
+                    }
+                }
+            </div>
+            @if (device.devicetype == "rgblight")
+            {
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" id="livePreview" name="livePreview" @bind="livePreview">
+                    <label class="custom-control-label" for="livePreview">Live Preview</label>
+                    <br /><br />
+                </div>
+            }
+            <button class="btn btn-primary" @onclick="SendMessageAsync">Send</button>
+            <button class="btn btn-primary" @onclick="RemoveDevice">Remove Device</button>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h3>Unauthorized Access!</h3>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    CancellationTokenSource disposalTokenSource = new CancellationTokenSource();
+    ClientWebSocket webSocket = new ClientWebSocket();
+    string data = "";
+    DeviceUser device = null;
+    bool livePreview = false;
+    bool isEditing = false;
+
+    [Parameter]
+    public string devicename { get; set; }
+
+    protected override void OnInitialized()
+    {
+        devicename = devicename;
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await webSocket.ConnectAsync(new Uri("ws://server:60648/api/devices/devicepanel/" + devicename), disposalTokenSource.Token);
+        _ = ReceiveLoop();
+        //await SendMessageAsync();
+    }
+
+    async Task SendMessageAsync()
+    {
+        var data = new ArraySegment<byte>(Encoding.UTF8.GetBytes(await JS.InvokeAsync<string>("PrepareData")));
+        await webSocket.SendAsync(data, WebSocketMessageType.Text, true, disposalTokenSource.Token);
+    }
+
+    async Task ReceiveLoop()
+    {
+        var buffer = new ArraySegment<byte>(new byte[1024 * 4]);
+        while (!disposalTokenSource.IsCancellationRequested)
+        {
+            var received = await webSocket.ReceiveAsync(buffer, disposalTokenSource.Token);
+            var receivedAsText = Encoding.UTF8.GetString(buffer.Array, 0, received.Count);
+            Console.WriteLine(receivedAsText);
+            device = Newtonsoft.Json.JsonConvert.DeserializeObject<DeviceUser>(receivedAsText);
+            StateHasChanged();
+        }
+    }
+
+    public string CapitalizeFirst(string str)
+    {
+        return str[0].ToString().ToUpper() + str.Substring(1);
+    }
+
+    public void Dispose()
+    {
+        disposalTokenSource.Cancel();
+        _ = webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Bye", CancellationToken.None);
+    }
+
+    public async void LivePreview()
+    {
+        if (livePreview)
+        {
+            await SendMessageAsync();
+        }
+    }
+
+    public async void EditDisplayName()
+    {
+        device.displayname = await JS.InvokeAsync<string>("EditDisplayName", isEditing);
+        isEditing = !isEditing;
+        if (!isEditing)
+        {
+            var data = new ArraySegment<byte>(Encoding.UTF8.GetBytes(device.displayname + "}"));
+            await webSocket.SendAsync(data, WebSocketMessageType.Text, true, disposalTokenSource.Token);
+        }
+    }
+
+    public async void RemoveDevice()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ConfirmationDialog.message), "Are you sure you want to remove the device?");
+        var dialogModal = modal.Show<ConfirmationDialog>("Remove Device", parameters);
+        var modalResult = await dialogModal.Result;
+        if (!modalResult.Cancelled)
+        {
+            var data = new ArraySegment<byte>(Encoding.UTF8.GetBytes("delete}"));
+            await webSocket.SendAsync(data, WebSocketMessageType.Text, true, disposalTokenSource.Token);
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}
