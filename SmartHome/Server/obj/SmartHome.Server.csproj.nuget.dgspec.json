@@ -1,0 +1,290 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Server\\SmartHome.Server.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Client\\SmartHome.Client.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Client\\SmartHome.Client.csproj",
+        "projectName": "SmartHome.Client",
+        "projectPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Client\\SmartHome.Client.csproj",
+        "packagesPath": "C:\\Users\\billy\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Client\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\billy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Shared\\SmartHome.Shared.csproj": {
+                "projectPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Shared\\SmartHome.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Blazored.LocalStorage": {
+              "target": "Package",
+              "version": "[4.1.5, )"
+            },
+            "Blazored.Modal": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Blazored.Toast": {
+              "target": "Package",
+              "version": "[3.2.2, )"
+            },
+            "Microsoft.AspNetCore.Components.Authorization": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.AspNetCore.Components.WebAssembly": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.AspNetCore.Components.WebAssembly.DevServer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.7, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "System.Net.Http.Json": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Runtime.browser-wasm",
+              "version": "[5.0.7, 5.0.7]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "browser-wasm": {
+          "#import": []
+        }
+      }
+    },
+    "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Server\\SmartHome.Server.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Server\\SmartHome.Server.csproj",
+        "projectName": "SmartHome.Server",
+        "projectPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Server\\SmartHome.Server.csproj",
+        "packagesPath": "C:\\Users\\billy\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Server\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\billy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Client\\SmartHome.Client.csproj": {
+                "projectPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Client\\SmartHome.Client.csproj"
+              },
+              "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Shared\\SmartHome.Shared.csproj": {
+                "projectPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Shared\\SmartHome.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.AspNetCore.Components.WebAssembly.Server": {
+              "target": "Package",
+              "version": "[5.0.7, )"
+            },
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Shared\\SmartHome.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Shared\\SmartHome.Shared.csproj",
+        "projectName": "SmartHome.Shared",
+        "projectPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Shared\\SmartHome.Shared.csproj",
+        "packagesPath": "C:\\Users\\billy\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\billy\\Documents\\Εργασίες\\Εργασίες\\4o Έτος\\Πτυχιακή Εργασία\\SmartHome\\Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\billy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
